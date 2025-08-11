@@ -1,0 +1,61 @@
+// android/app/build.gradle
+
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.facebook.react"   // RN 0.80 plugin
+
+react {
+  jsEngine = "hermes"
+}
+
+def enableProguardInReleaseBuilds = false
+
+android {
+  namespace "com.truecashpaymobile"   // change if needed
+  compileSdkVersion 34
+
+  defaultConfig {
+    applicationId "com.truecashpaymobile"
+    minSdkVersion 24
+    targetSdkVersion 34
+    versionCode 1
+    versionName "1.0"
+    multiDexEnabled true
+
+    externalNativeBuild { cmake { cppFlags "-std=c++17 -frtti -fexceptions" } }
+    ndk { abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64" }
+  }
+
+  // If you actually have CMakeLists.txt under app/
+  externalNativeBuild { cmake { path "CMakeLists.txt" } }
+
+  signingConfigs {
+    release {
+      if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+        storeFile file(MYAPP_RELEASE_STORE_FILE)
+        storePassword MYAPP_RELEASE_STORE_PASSWORD
+        keyAlias MYAPP_RELEASE_KEY_ALIAS
+        keyPassword MYAPP_RELEASE_KEY_PASSWORD
+      }
+    }
+  }
+
+  buildTypes {
+    debug { signingConfig signingConfigs.debug }
+    release {
+      signingConfig signingConfigs.release
+      minifyEnabled enableProguardInReleaseBuilds
+      proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+    }
+  }
+
+  packagingOptions { pickFirst "**/*.so" }
+}
+
+dependencies {
+  implementation fileTree(dir: "libs", include: ["*.jar"])
+  implementation("com.facebook.react:react-android")
+  implementation("com.facebook.react:hermes-android")
+  implementation "androidx.core:core-ktx:1.13.1"
+  implementation "androidx.appcompat:appcompat:1.7.0"
+}

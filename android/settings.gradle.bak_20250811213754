@@ -1,0 +1,19 @@
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    mavenCentral()
+    google()
+    maven { url("$rootDir/../node_modules/react-native/android") }
+  }
+  // This exposes the com.facebook.react Gradle plugin
+  includeBuild("../node_modules/react-native/packages/react-native-gradle-plugin")
+}
+
+dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+  repositories {
+    mavenCentral()
+    google()
+    maven { url("$rootDir/../node_modules/react-native/android") }
+  }
+}

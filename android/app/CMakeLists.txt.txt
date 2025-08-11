@@ -1,0 +1,41 @@
+cmake_minimum_required(VERSION 3.10.2)
+
+project("your_project")
+
+# Set C++17 standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Add shared library
+add_library(
+  appmodules
+  SHARED
+  OnLoad.cpp
+)
+
+# Link Android log library
+find_library(
+  log-lib
+  log
+)
+
+# Add c++_shared as imported shared library
+add_library(
+  c++_shared
+  SHARED
+  IMPORTED
+)
+
+# Set path to c++_shared library from the NDK
+set_target_properties(
+  c++_shared
+  PROPERTIES IMPORTED_LOCATION
+  "${CMAKE_ANDROID_NDK}/sources/cxx-stl/llvm-libc++/libs/${ANDROID_ABI}/libc++_shared.so"
+)
+
+# Link libraries to your native module
+target_link_libraries(
+  appmodules
+  c++_shared
+  ${log-lib}
+)
